@@ -28,12 +28,14 @@ class UrlController extends Controller
     }
 
 
-    public function show(Url $url){
+    public function show($shorten_url){
+        $url = Url::where('shorten_url',$shorten_url)->first();
         $url->increment('visits');
         return redirect($url->full_url);
     }
 
-    public function update(UpdateUrlRequest $request, Url $url){
+    public function update(UpdateUrlRequest $request, $shorten_url){
+        $url = Url::where('shorten_url',$shorten_url)->first();
         $url->update([
             'full_url' => $request->full_url,
             'url_desc' => $request->url_desc,
@@ -42,7 +44,8 @@ class UrlController extends Controller
         return response()->json($url);
     }
 
-    public function destroy(Url $url){
+    public function destroy($shorten_url){
+        $url = Url::where('shorten_url',$shorten_url)->first();
         $url->delete();
         return response()->json('deleted');
     }

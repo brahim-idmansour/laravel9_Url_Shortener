@@ -5,7 +5,7 @@
                 <h4 class="mb-2 border p-2 rounded">
                     All Links
                 </h4>
-                <div class="list-group"  v-for="link in data.links" :key="link.id">
+                <div class="list-group"  v-for="link in store.getLinks" :key="link.id">
                     <li  @click="data.url_id = link.id"
                     class="list-group-item list-group-item-action" style="cursor:pointer;">
                         <div class="d-flex w-100 justify-content-between">
@@ -29,45 +29,73 @@
                     <p 
                     v-if="data.url_id === link.id"
                     class="d-flex justify-content-around align-items-center my-2">
-                        <button class="btn btn-warning btn-sm">
+                        <button 
+                        @click="store.editLink(link)"
+                        class="btn btn-warning btn-sm">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-danger btn-sm">
+                        <button 
+                        @click="store.deleteLink(link.shorten_url,user_id)"
+                        class="btn btn-danger btn-sm">
                             <i class="fas fa-trash"></i>
                         </button>
-                        <button class="btn btn-dark btn-sm">
+                        <button
+                        @click="copy(link.shorten_url)"
+                        class="btn btn-dark btn-sm">
                             <i class="fas fa-copy"></i>
                         </button>
-                        <button class="btn btn-primary btn-sm">
+                        <a :href="link.full_url" target="_blank" class="btn btn-primary btn-sm">
                             <i class="fas fa-arrow-up-right-from-square"></i>
-                        </button>
+                        </a>
                     </p>
+                </div>
+            </div>
+            <div class="card-footer bg-white">
+                <div class="d-flex justify-content-between">
+                    <button
+                        :disabled="!store.links.prev_page_url"
+                        @click="store.previous(user_id)"
+                        class="btn btn-sm btn-link">
+                        <i class="fas fa-chevron-left"></i>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button
+                        :disabled="!store.links.next_page_url"
+                        @click="store.next(user_id)"
+                        class="btn btn-sm btn-link">
+                        <i class="fas fa-chevron-right"></i>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script setup>
-import { inject , onMounted, reactive } from 'vue';
+import { inject, onMounted, reactive } from 'vue';
+import { useLinkStore } from '@/stores/useLinkStore';
+import Swal from "sweetalert2";
+
+//get store
+const store = useLinkStore();
 
 const data = reactive({
-    links: [],
     url_id : ''
 });
 
 const user_id = inject('user_id');
 
-
-const fetchLinks = async () => {
-    try {
-        const response = await axios.get(`/api/user/urls/${user_id}`);
-        data.links = response.data.data;
-console.log(data);
-    } catch (error) {
-        console.log(error);
-    }
+const copy = (shorten_url) => {
+    navigator.clipboard.writeText(`127.0.0.1:8000/visit/${shorten_url}`);
+     Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Your link has been copied : " + shorten_url,
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
 }
-onMounted(() => fetchLinks());
+onMounted(() => store.fetchLinks(user_id));
 </script>
 <style>
 

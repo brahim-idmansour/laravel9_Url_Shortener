@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UrlController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,3 +27,5 @@ Route::get('user/register', [UserController::class,'registerForm'])->name('regis
 Route::post('user/register', [UserController::class,'store'])->name('register');
 Route::get('user/login', [UserController::class,'loginForm'])->name('login');
 Route::post('user/login', [UserController::class,'auth'])->name('login');
+
+Route::get('visit/{shorten_url}', [UrlController::class,'show']);
