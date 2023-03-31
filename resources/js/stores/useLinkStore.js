@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 export const useLinkStore = defineStore("links", {
     state: () => ({
@@ -28,7 +29,7 @@ export const useLinkStore = defineStore("links", {
                 });
                 this.fetchLinks(user_id);
                 this.link = {
-                    updating : false,
+                    updating: false,
                     data: {
                         full_url: "",
                         url_desc: "",
@@ -106,11 +107,11 @@ export const useLinkStore = defineStore("links", {
             this.errors = null;
             this.link = {
                 updating: true,
-                data : url
-            }
+                data: url,
+            };
         },
 
-       async updateLink(user_id) {
+        async updateLink(user_id) {
             this.errors = null;
             try {
                 await axios.put(`/api/urls/${this.link.data.shorten_url}`, {
@@ -120,7 +121,7 @@ export const useLinkStore = defineStore("links", {
                 });
                 this.fetchLinks(user_id);
                 this.link = {
-                    updating : false,
+                    updating: false,
                     data: {
                         full_url: "",
                         url_desc: "",
@@ -134,6 +135,7 @@ export const useLinkStore = defineStore("links", {
                     showConfirmButton: false,
                     timer: 2500,
                 });
+                
             } catch (error) {
                 this.errors = error.response && error.response.data.errors;
                 console.log(error);
@@ -145,10 +147,10 @@ export const useLinkStore = defineStore("links", {
             this.link = {
                 updating: false,
                 data: {
-                        full_url: "",
-                        url_desc: "",
-                    },
-            }
-        }
+                    full_url: "",
+                    url_desc: "",
+                },
+            };
+        },
     },
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use App\Models\Url;
 use App\Http\Requests\StoreUrlRequest;
+use App\Http\Requests\UpdateUrlRequest;
 use Illuminate\Http\Request;
 
 class UrlController extends Controller
